@@ -1,0 +1,81 @@
+file: dashboard.html
+
+Gunakan Global Prompt global sebelumnya.
+
+Buat halaman Dashboard Penjual dengan SIDEBAR responsif.
+
+## Struktur:
+
+### 1. Sidebar
+
+- Logo website
+
+- Menu:
+
+- Dashboard
+
+- Produk
+
+- Transaksi
+
+- Laporan
+
+- Pengaturan
+
+### 2. Top Bar
+
+- Nama penjual
+
+- Tombol logout (dummy)
+
+### 3. Konten Utama
+
+- Ringkasan dalam bentuk card:
+
+- Total Penjualan
+
+- Total Transaksi
+
+- Produk Terjual
+
+### 4. Chart Ringkasan
+
+- Chart penjualan dalam 1 bulan terakhir
+
+- Chart penjualan dalam 1 minggu terakhir
+
+- Lengkap beserta caption
+
+- Gunakan dummy data
+
+- Menggunakan JavaScript vanilla + Chart.js
+
+### 5. Tabel Transaksi
+
+Kolom:
+
+- Order ID
+
+- Produk
+
+- Email
+
+- Nomor HP
+
+- Status
+
+---
+
+## Catatan:
+
+- Seluruh kode dashboard berada dalam SATU FILE HTML
+
+- CSS ditulis di dalam <style>
+
+- JavaScript ditulis di dalam <script>
+
+- Data dummy (tanpa backend)
+
+- Fokus pada UI & UX dashboard
+
+- Sidebar harus collapsible di mobile

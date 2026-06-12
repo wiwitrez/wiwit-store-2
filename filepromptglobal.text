@@ -1,0 +1,49 @@
+
+nK.
+Workspace: /gl
+EDIT MODE
+Global Prompting
+Index.html
+Dashboard.html
+Knowledge Base
+COPY TEXT
+GLOBAL PROMPTING
+
+Ingat aturan global di bawah ini khusus untuk sesi ini saja, namun jangan buatkan dulu:
+
+---
+
+Anda adalah UI/UX Designer dan Frontend Developer profesional.
+
+Buat website statis e-commerce produk digital bernama [Nama Website].
+
+## Aturan Global:
+
+- Stack: HTML semantic, CSS murni (tanpa framework), JavaScript vanilla
+
+- Desain: modern, minimalis
+
+- Tema: Gelap
+
+- Warna utama: Ungu
+
+- Warna pendukung: Abu-abu
+
+- Font: sans-serif modern
+
+- Card membulat
+
+- Shadow halus
+
+- Spacing konsisten
+
+- Responsif (desktop & mobile)
+
+## Struktur Halaman:
+
+- Landing Page menggunakan NAVBAR responsif
+
+- Dashboard Penjual menggunakan SIDEBAR responsif
+
+Status: Terkunci
+noteKu Protective Layer v2.0

@@ -1,0 +1,173 @@
+file: index.html
+
+Gunakan Global Prompt Global sebelumnya.
+
+Buat 1 halaman Landing Page ecommerce produk digital dengan struktur berikut:
+
+---
+
+## 1. Navbar (Responsif)
+
+- Logo Website
+
+- Menu: Home, Produk, FAQ, Kontak
+
+---
+
+## 2. Hero Section
+
+- Headline kuat
+
+- Tombol CTA:
+
+- "Lihat Produk"
+
+- "Beli Sekarang"
+
+- Ilustrasi / mockup produk digital menggunakan gambar dari:
+
+https://placehold.net/default.png
+
+---
+
+## 3. Section Mengapa Memilih Kami
+
+Buat 3–4 card keunggulan:
+
+- Produk Digital Berkualitas
+
+- Sekali Beli, Akses Selamanya
+
+- Cocok untuk Pemula
+
+- Hemat & Ramah Lingkungan
+
+---
+
+## 4. Section Produk
+
+Tampilkan 3 card produk.
+
+Setiap card dan banner menggunakan gambar dari:
+
+https://placehold.net/default.png
+
+Produk:
+
+- Kopi
+
+- Keripik
+
+Setiap produk memiliki:
+
+- Judul
+
+- Deskripsi singkat
+
+- Harga
+
+- Tombol "Beli"
+
+---
+
+## 5. CTA Checkout (Interaktif)
+
+Saat tombol "Beli" diklik:
+
+- Muncul form checkout (toggle / modal / section)
+
+### Form Checkout berisi:
+
+- Order ID (hidden, otomatis: DE- + timestamp)
+
+- Harga (gross_amount, hidden / readonly)
+
+- Email
+
+- Nomor HP
+
+- Tombol "Bayar Sekarang" dilengkapi animasi loading
+
+---
+
+## 6. Integrasi Midtrans Sandbox (Frontend-only)
+
+Gunakan Snap.js Sandbox sesuai referensi:
+
+https://docs.midtrans.com/docs/snap-snap-integration-guide#1-acquiring-transaction-token-on-backend
+
+Ketentuan teknis:
+
+- Gunakan kode asli Midtrans sandbox (tanpa simulasi)
+
+- Gunakan JavaScript vanilla
+
+- Saat tombol "Bayar Sekarang" diklik:
+
+- Generate order_id otomatis
+
+- Kirim request ke Midtrans Snap Sandbox
+
+- Gunakan fetch method POST ke endpoint Snap
+
+- Endpoint:
+
+https://app.sandbox.midtrans.com/snap/v1/transactions
+
+- Gunakan proxy CORS untuk demo:
+
+"https://corsproxy.io/(TANPA TANDA TANYA)" + "https://app.sandbox.midtrans.com/snap/v1/transactions"
+
+- Jangan gunakan fungsi encodeURIComponent()
+
+### Payload harus berisi:
+
+- item_details (id, price, quantity, price)
+
+- transaction_details (order_id, gross_amount)
+
+- customer_details (email, phone)
+
+Jika token diterima:
+
+```
+
+window.snap.pay(token)
+
+```
+
+Tambahkan komentar yang informatif untuk memudahkan developer mengisi:
+
+- Client Key
+
+- Server Key
+
+dari Midtrans Sandbox
+
+---
+
+## 7. Section FAQ
+
+Buat 3 pertanyaan umum tentang produk digital.
+
+---
+
+## 8. Footer
+
+- Copyright
+
+- Teks singkat legal
+
+---
+
+## Ketentuan Teknis Tambahan
+
+- Seluruh kode berada dalam SATU FILE HTML
+
+- CSS ditulis di dalam <style>
+
+- JavaScript ditulis di dalam <script>
+
+- Gunakan HTML semantic
+
+- Kode realistis dan bisa langsung dijalankan di browser
