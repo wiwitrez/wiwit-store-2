@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Penjual - Wiwit_Store</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* --- DESIGN SYSTEM (GLOBAL PROMPT) --- */
+        :root {
+            --bg-primary: #0F172A;
+            --bg-secondary: #1E293B;
+            --primary: #6D28D9;
+            --primary-hover: #8B5CF6;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --border-color: #334155;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --shadow-subtle: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-sans);
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+            transition: 0.3s;
+        }
+
+        /* --- 1. SIDEBAR (COLLAPSIBLE) --- */
+        .sidebar {
+            width: 260px;
+            background-color: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-brand {
+            padding: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-brand span {
+            color: var(--primary-hover);
+        }
+
+        .close-sidebar-btn {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex-grow: 1;
+        }
+
+        .menu-item a {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            color: var(--text-muted);
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            gap: 12px;
+        }
+
+        .menu-item.active a,
+        .menu-item a:hover {
+            background-color: rgba(109, 40, 217, 0.15);
+            color: var(--text-main);
+        }
+
+        .menu-item.active a {
+            border-left: 4px solid var(--primary-hover);
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        /* --- 2. TOP BAR & CONTAINER LAYOUT --- */
+        .app-container {
+            margin-left: 260px;
+            flex-grow: 1;
+            min-width: 0;
+            /* Mencegah flex item meluap */
+            display: flex;
+            flex-direction: column;
+            transition: margin-left 0.3s ease;
+        }
+
+        .topbar {
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            height: 70px;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .hamburger-btn {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--text-main);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-profile {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .btn-logout {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #EF4444;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .btn-logout:hover {
+            background-color: #EF4444;
+            color: white;
+        }
+
+        /* --- 3. KONTEN UTAMA & CARDS --- */
+        .main-content {
+            padding: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-top: 0.5rem;
+            color: var(--text-main);
+        }
+
+        /* --- 4. CHART RINGKASAN --- */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .chart-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .chart-caption {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            width: 100%;
+            height: 280px;
+        }
+
+        /* --- 5. TABEL TRANSAKSI --- */
+        .table-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .table-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+            min-width: 600px;
+        }
+
+        th {
+            background-color: rgba(15, 23, 42, 0.3);
+            color: var(--text-muted);
+            font-weight: 600;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge-status {
+            display: inline-block;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-success {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+        }
+
+        .status-pending {
+            background-color: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+        }
+
+        /* --- RESPONSIVE MEDIA QUERIES --- */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .close-sidebar-btn {
+                display: block;
+            }
+
+            .app-container {
+                margin-left: 0;
+            }
+
+            .hamburger-btn {
+                display: block;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .topbar {
+                padding: 0 1rem;
+            }
+
+            .user-profile {
+                display: none;
+            }
+
+            .main-content {
+                padding: 1.25rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <a href="index.html">Wiwit_<span>Store</span></a>
+            <button class="close-sidebar-btn" id="closeSidebarBtn">&times;</button>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="menu-item active"><a href="#">📊 Dashboard</a></li>
+            <li class="menu-item"><a href="#">📦 Produk</a></li>
+            <li class="menu-item"><a href="#">💸 Transaksi</a></li>
+            <li class="menu-item"><a href="#">📈 Laporan</a></li>
+            <li class="menu-item"><a href="#">⚙️ Pengaturan</a></li>
+        </ul>
+    </aside>
+
+    <div class="app-container">
+
+        <nav class="topbar">
+            <div class="topbar-left">
+                <button class="hamburger-btn" id="hamburgerBtn">☰</button>
+                <h2 style="font-size: 1.25rem; font-weight: 700;">Ringkasan Data</h2>
+            </div>
+            <div class="topbar-right">
+                <span class="user-profile">👋 Admin Wiwit</span>
+                <button class="btn-logout" onclick="alert('Anda mensimulasikan logout dummy.')">Logout</button>
+            </div>
+        </nav>
+
+        <main class="main-content">
+
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-label">Total Penjualan</span>
+                    <div class="stat-value">Rp 3.640.000</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Total Transaksi</span>
+                    <div class="stat-value">22 Transaksi</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Produk Terjual</span>
+                    <div class="stat-value">31 Item</div>
+                </div>
+            </section>
+
+            <section class="charts-grid">
+                <div class="chart-card">
+                    <h3>Tren Volume Penjualan</h3>
+                    <p class="chart-caption">Akumulasi grafik omzet kotor produk digital dalam waktu 1 bulan terakhir
+                    </p>
+                    <div class="chart-wrapper">
+                        <canvas id="monthlyChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3>Performa Mingguan</h3>
+                    <p class="chart-caption">Rasio komparasi distribusi item digital terjual 1 minggu terakhir</p>
+                    <div class="chart-wrapper">
+                        <canvas id="weeklyChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <section class="table-card">
+                <h3>Log Transaksi Terbaru (Sandbox Mode)</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Produk</th>
+                                <th>Email</th>
+                                <th>Nomor HP</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="font-weight: 600; color: var(--primary-hover);">DE-1718195501</td>
+                                <td>E-Book Blueprint Kopi</td>
+                                <td>budi.s@email.com</td>
+                                <td>081234567890</td>
+                                <td><span class="badge-status status-success">Success</span></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: 600; color: var(--primary-hover);">DE-1718195655</td>
+                                <td>Masterclass Keripik Renyah</td>
+                                <td>siti.aminah@email.com</td>
+                                <td>085711223344</td>
+                                <td><span class="badge-status status-success">Success</span></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: 600; color: var(--primary-hover);">DE-1718195900</td>
+                                <td>Super Bundle Combo Pack</td>
+                                <td>andi.wijaya@email.com</td>
+                                <td>081987654321</td>
+                                <td><span class="badge-status status-pending">Pending</span></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: 600; color: var(--primary-hover);">DE-1718196122</td>
+                                <td>E-Book Blueprint Kopi</td>
+                                <td>dewi.lestari@email.com</td>
+                                <td>082155443322</td>
+                                <td><span class="badge-status status-success">Success</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        /* === LOGIKA SIDEBAR COLLAPSIBLE MOBILE === */
+        const sidebar = document.getElementById('sidebar');
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+
+        hamburgerBtn.addEventListener('click', () => sidebar.classList.add('active'));
+        closeSidebarBtn.addEventListener('click', () => sidebar.classList.remove('active'));
+
+        // Menutup sidebar otomatis saat user mengklik di luar area sidebar (Mobile Mode)
+        document.addEventListener('click', (e) => {
+            if (!sidebar.contains(e.target) && !hamburgerBtn.contains(e.target) && window.innerWidth <= 992) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        /* === CONFIG CHART.JS (THEME GELAP UNGU) === */
+        // Global styling untuk chart agar menyatu dengan tema gelap
+        Chart.defaults.color = '#94A3B8';
+        Chart.defaults.borderColor = '#334155';
+
+        // 1. Inisialisasi Chart Bulanan (Line Chart)
+        const ctxMonthly = document.getElementById('monthlyChart').getContext('2d');
+        new Chart(ctxMonthly, {
+            type: 'line',
+            data: {
+                labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'],
+                datasets: [{
+                    label: 'Omzet Penjualan (IDR)',
+                    data: [750000, 1200000, 940000, 1845000],
+                    borderColor: '#8B5CF6',
+                    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.3,
+                    pointBackgroundColor: '#6D28D9'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { grid: { color: '#334155' }, ticks: { callback: value => 'Rp ' + value.toLocaleString('id-ID') } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // 2. Inisialisasi Chart Mingguan (Doughnut Chart)
+        const ctxWeekly = document.getElementById('weeklyChart').getContext('2d');
+        new Chart(ctxWeekly, {
+            type: 'doughnut',
+            data: {
+                labels: ['Kopi E-Book', 'Keripik Course', 'Bundle Combo'],
+                datasets: [{
+                    data: [14, 10, 7],
+                    backgroundColor: ['#6D28D9', '#8B5CF6', '#334155'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { padding: 15, boxWidth: 12 } }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
